@@ -11,7 +11,7 @@ export default function Home() {
     <Layout>
       <Hero />
       <PlatformsSection />
-      <ContentSection />
+      {/* <ContentSection /> */}
       <SubmitSection />
       {/* <ThemeTest /> */}
     </Layout>
