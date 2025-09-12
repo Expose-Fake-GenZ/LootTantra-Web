@@ -1,26 +1,154 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: Inter, system-ui, sans-serif;
+
+  /* Dark mode configuration */
+  --dark-mode: class;
+
+  /* Custom colors */
+  --color-primary-red: #dc2626;
+  --color-primary-red-light: #ef4444;
+  --color-primary-red-dark: #b91c1c;
+  --color-primary-black: #000000;
+  --color-primary-black-light: #1f2937;
+  --color-primary-black-lighter: #374151;
+
+  /* Custom spacing */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+
+  /* Custom max-width */
+  --max-width-content: 1360px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Custom utility classes for primary colors */
+.bg-primary-red {
+  background-color: #dc2626;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.text-primary-red {
+  color: #dc2626;
+}
+
+.border-primary-red {
+  border-color: #dc2626;
+}
+
+.bg-primary-black {
+  background-color: #000000;
+}
+
+.text-primary-black {
+  color: #000000;
+}
+
+.text-primary-black-light {
+  color: #1f2937;
+}
+
+.hover\:text-primary-red:hover {
+  color: #dc2626;
+}
+
+.hover\:bg-primary-red:hover {
+  background-color: #dc2626;
+}
+
+/* Dark mode overrides for custom classes - Higher specificity */
+.dark .text-primary-black {
+  color: #f9fafb !important; /* Override to white in dark mode */
+}
+
+.dark .text-primary-black-light {
+  color: #9ca3af !important;
+}
+
+.dark .bg-primary-black {
+  background-color: #1f2937; /* Darker background in dark mode */
+}
+
+/* Additional dark mode utilities */
+.dark .hover\:text-primary-red:hover {
+  color: #dc2626;
+}
+
+.dark .hover\:bg-primary-red:hover {
+  background-color: #dc2626;
+}
+
+/* Ensure dark mode works properly */
+.dark {
+  color-scheme: dark;
+}
+
+/* Body styles without !important to allow component overrides */
+html:not(.dark) body {
+  background-color: white;
+  color: #111827;
+}
+
+html.dark body {
+  background-color: #111827;
+  color: #f9fafb;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Line clamp utility for text truncation */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ef4444;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #dc2626;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #ef4444;
 }
