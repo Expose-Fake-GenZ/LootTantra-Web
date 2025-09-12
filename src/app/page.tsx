@@ -5,7 +5,6 @@ import {
   ContentSection,
   SubmitSection,
 } from "@/components/sections";
-import ThemeTest from "@/components/ui/ThemeTest";
 
 export default function Home() {
   return (

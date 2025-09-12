@@ -7,6 +7,7 @@ export interface Platform {
   contentCount: number;
   createdAt: Date;
   updatedAt: Date;
+  platformUrl: string;
 }
 
 // Content Model

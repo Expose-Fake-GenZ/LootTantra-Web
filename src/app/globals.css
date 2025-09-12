@@ -23,6 +23,10 @@
   --max-width-content: 1360px;
 }
 
+body {
+  scroll-behavior: smooth;
+}
+
 /* Custom utility classes for primary colors */
 .bg-primary-red {
   background-color: #dc2626;

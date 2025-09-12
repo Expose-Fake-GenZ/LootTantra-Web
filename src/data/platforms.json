@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "name": "Protest Chor Haru",
+    "description": "Online platform which uploads resources with proofs of vandalism and violence on Gen Z protest",
+    "contentCount": 12,
+    "createdAt": "2025",
+    "platformUrl": "https://protestchorharu.netlify.app"
+  },
+  {
+    "id": "2",
+    "name": "Bhadra 24 Forum",
+    "description": "Online forum to document real problems faced by people,propose practical, implementable solutions, develop detailed action plans for national progress and stay informed with real-time updates from across Nepal",
+    "contentCount": 12,
+    "createdAt": "2025",
+    "platformUrl": "https://forum.bhadra24.com"
+  }
+]

@@ -3,7 +3,14 @@ import { useState, useMemo } from "react";
 import { ContentItem as ContentItemType } from "@/types";
 import ContentItem from "./ContentItem";
 import { EmptyState } from "@/components/ui";
-import { Search, Filter, SortAsc, SortDesc } from "lucide-react";
+import {
+  Search,
+  Filter,
+  SortAsc,
+  SortDesc,
+  FileText,
+  SearchX,
+} from "lucide-react";
 
 interface ContentListProps {
   content: ContentItemType[];
@@ -92,6 +99,7 @@ export default function ContentList({
   if (content.length === 0) {
     return (
       <EmptyState
+        icon={FileText}
         title="No Content Available"
         description="There are no content reports to display at this time."
       />
@@ -175,6 +183,7 @@ export default function ContentList({
         </div>
       ) : (
         <EmptyState
+          icon={SearchX}
           title="No Matching Content"
           description="No content reports match your current search and filter criteria."
         />

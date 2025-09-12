@@ -63,8 +63,8 @@ export default function SubmitSection() {
                     Protect Privacy
                   </h4>
                   <p className="text-primary-black-light dark:text-gray-300">
-                    Blur or redact personal information that isn't relevant to
-                    the incident.
+                    Blur or redact personal information that isn&apos;t relevant
+                    to the incident.
                   </p>
                 </div>
               </div>

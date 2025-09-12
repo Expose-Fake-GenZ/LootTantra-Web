@@ -27,7 +27,7 @@ export default function ThemeDebug() {
   return (
     <div className="fixed right-4 bottom-4 z-50 rounded-lg bg-black/80 p-4 text-sm text-white">
       <div>Theme Context: {theme}</div>
-      <div>HTML Classes: "{htmlClasses}"</div>
+      <div>HTML Classes: &quot;{htmlClasses}&quot;</div>
       <div>
         Dark Mode Active:{" "}
         {document.documentElement.classList.contains("dark") ? "Yes" : "No"}

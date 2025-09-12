@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Platform } from "@/types";
 import PlatformCard from "./PlatformCard";
-import { Button } from "@/components/ui";
-import { Search, Filter, Grid, List, Loader2 } from "lucide-react";
+import { Button, FilterMenu } from "@/components/ui";
+import type { FilterOption, SortOption } from "@/components/ui/FilterMenu";
+import { Search, Loader2 } from "lucide-react";
 
 interface PlatformListProps {
   platforms: Platform[];
+  categories?: string[];
+  totalCount?: number;
+  showLoadMore?: boolean;
   loading?: boolean;
   onLoadMore?: () => void;
   hasMore?: boolean;
@@ -15,6 +19,9 @@ interface PlatformListProps {
 
 export default function PlatformList({
   platforms,
+  categories = [],
+  totalCount,
+  showLoadMore = false,
   loading = false,
   onLoadMore,
   hasMore = false,
@@ -22,14 +29,29 @@ export default function PlatformList({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"name" | "updated" | "reports">(
-    "updated",
-  );
+  const [sortBy, setSortBy] = useState("updated");
 
-  // Get unique categories
-  const categories = [
-    "all",
-    ...Array.from(new Set(platforms.map((p) => p.category))),
+  // Get unique categories and create filter options
+  const filterOptions: FilterOption[] = useMemo(() => {
+    // Use provided categories or extract from platforms
+    const availableCategories =
+      categories.length > 0
+        ? categories
+        : Array.from(new Set(platforms.map((p) => p.category)));
+
+    return [
+      { value: "all", label: "All Categories" },
+      ...availableCategories.map((category) => ({
+        value: category,
+        label: category,
+      })),
+    ];
+  }, [platforms, categories]);
+
+  const sortOptions: SortOption[] = [
+    { value: "updated", label: "Recently Updated" },
+    { value: "name", label: "Name A-Z" },
+    { value: "reports", label: "Most Reports" },
   ];
 
   // Filter and sort platforms
@@ -58,15 +80,17 @@ export default function PlatformList({
     });
 
   const handlePlatformClick = (platform: Platform) => {
-    // TODO: Navigate to platform detail page or show modal
-    console.log("Platform clicked:", platform.name);
+    // Navigate to the platform's URL in a new tab
+    if (platform.platformUrl) {
+      window.open(platform.platformUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   if (loading && platforms.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-primary-red animate-spin mx-auto mb-4" />
+          <Loader2 className="text-primary-red mx-auto mb-4 h-8 w-8 animate-spin" />
           <p className="text-primary-black-light">Loading platforms...</p>
         </div>
       </div>
@@ -75,96 +99,36 @@ export default function PlatformList({
 
   return (
     <div className="space-y-6">
-      {/* Search and Filter Controls */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-black-light w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search platforms..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-red focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Category Filter */}
-          <div className="flex items-center space-x-2">
-            <Filter className="w-5 h-5 text-primary-black-light" />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-red focus:border-transparent"
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category === "all" ? "All Categories" : category}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort */}
-          <select
-            value={sortBy}
-            onChange={(e) =>
-              setSortBy(e.target.value as "name" | "updated" | "reports")
-            }
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-red focus:border-transparent"
-          >
-            <option value="updated">Recently Updated</option>
-            <option value="name">Name A-Z</option>
-            <option value="reports">Most Reports</option>
-          </select>
-
-          {/* View Mode Toggle */}
-          <div className="flex border border-gray-300 rounded-lg overflow-hidden">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 ${viewMode === "grid" ? "bg-primary-red text-white" : "bg-white text-primary-black-light hover:bg-gray-50"}`}
-            >
-              <Grid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              className={`p-2 ${viewMode === "list" ? "bg-primary-red text-white" : "bg-white text-primary-black-light hover:bg-gray-50"}`}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Results Count */}
-      <div className="flex items-center justify-between">
-        <p className="text-primary-black-light">
-          Showing {filteredPlatforms.length} of {platforms.length} platforms
-        </p>
-        {searchTerm && (
-          <button
-            onClick={() => setSearchTerm("")}
-            className="text-primary-red hover:text-primary-red-dark text-sm"
-          >
-            Clear search
-          </button>
-        )}
-      </div>
+      {/* Filter Menu */}
+      <FilterMenu
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Search platforms..."
+        filterOptions={filterOptions}
+        selectedFilter={selectedCategory}
+        onFilterChange={setSelectedCategory}
+        sortOptions={sortOptions}
+        selectedSort={sortBy}
+        onSortChange={setSortBy}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        showViewToggle={true}
+        totalCount={totalCount || platforms.length}
+        filteredCount={filteredPlatforms.length}
+        itemType="platforms"
+      />
 
       {/* Platform Grid/List */}
       {filteredPlatforms.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search className="w-8 h-8 text-gray-400" />
+        <div className="py-12 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+            <Search className="h-8 w-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold text-primary-black mb-2">
+          <h3 className="text-primary-black mb-2 text-lg font-semibold">
             No platforms found
           </h3>
           <p className="text-primary-black-light">
-            Try adjusting your search terms or filters to find what you're
+            Try adjusting your search terms or filters to find what you&apos;re
             looking for.
           </p>
         </div>
@@ -172,7 +136,7 @@ export default function PlatformList({
         <div
           className={
             viewMode === "grid"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              ? "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
               : "space-y-4"
           }
         >
@@ -187,8 +151,8 @@ export default function PlatformList({
       )}
 
       {/* Load More Button */}
-      {hasMore && (
-        <div className="text-center pt-8">
+      {(hasMore || showLoadMore) && (
+        <div className="pt-8 text-center">
           <Button
             onClick={onLoadMore}
             disabled={loading}
@@ -197,7 +161,7 @@ export default function PlatformList({
           >
             {loading ? (
               <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Loading...
               </>
             ) : (
