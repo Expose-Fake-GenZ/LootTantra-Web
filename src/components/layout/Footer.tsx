@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Github, Twitter, Mail, ExternalLink } from "lucide-react";
+import socials from "@/data/socials.json";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -62,7 +63,7 @@ export default function Footer() {
             </h3>
             <div className="flex space-x-6">
               <Link
-                href="https://github.com"
+                href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary-red rounded-lg p-2 text-gray-200 transition-colors duration-200 hover:bg-gray-800"
@@ -71,7 +72,7 @@ export default function Footer() {
                 <Github className="h-6 w-6" />
               </Link>
               <Link
-                href="https://twitter.com"
+                href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary-red rounded-lg p-2 text-gray-200 transition-colors duration-200 hover:bg-gray-800"
@@ -80,7 +81,7 @@ export default function Footer() {
                 <Twitter className="h-6 w-6" />
               </Link>
               <Link
-                href="mailto:contact@loottantra.com"
+                href={socials.email}
                 className="hover:text-primary-red rounded-lg p-2 text-gray-200 transition-colors duration-200 hover:bg-gray-800"
                 aria-label="Email"
               >
