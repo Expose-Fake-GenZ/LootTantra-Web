@@ -3,40 +3,45 @@
     "id": "1",
     "name": "Protest Chor Haru",
     "description": "Online platform which uploads resources with proofs of vandalism and violence on Gen Z protest",
-    "contentCount": 12,
+    "platformType": "Portal",
     "createdAt": "2025",
-    "platformUrl": "https://protestchorharu.netlify.app"
+    "platformUrl": "https://protestchorharu.netlify.app",
+    "dateCreated": "2025"
   },
   {
     "id": "2",
     "name": "Bhadra 24 Forum",
     "description": "Online forum to document real problems faced by people,propose practical, implementable solutions, develop detailed action plans for national progress and stay informed with real-time updates from across Nepal",
-    "contentCount": 12,
+    "platformType": "Portal",
     "createdAt": "2025",
-    "platformUrl": "https://forum.bhadra24.com"
+    "platformUrl": "https://forum.bhadra24.com",
+    "dateCreated": "2025"
   },
   {
     "id": "3",
     "name": "Protest against corruption",
     "description": "Online platform to provide trusted updates, connect volunteers, and provide emergency resources to protect peaceful protesters.",
-    "contentCount": 12,
+    "platformType": "Website",
     "createdAt": "2025",
-    "platformUrl": "https://youthagainstcorruption.com"
+    "platformUrl": "https://youthagainstcorruption.com",
+    "dateCreated": "2025"
   },
   {
     "id": "4",
     "name": "Chhalphal",
     "description": "Chhalphal delivers news with uncompromising accuracy, simplifies information into concise formats, Connecting Nepali communities globally, empowers community-driven journalism",
-    "contentCount": 12,
+    "platformType": "Portal",
     "createdAt": "2025",
-    "platformUrl": "https://chhalphal.com"
+    "platformUrl": "https://chhalphal.com",
+    "dateCreated": "2025"
   },
   {
     "id": "5",
     "name": "Looters - Community Safety Reporting System",
     "description": "Community-powered platform for reporting and tracking suspicious individuals. Help keep your community safe with real-time reports.",
-    "contentCount": 1617,
+    "platformType": "Forum",
     "createdAt": "2025",
-    "platformUrl": "https://chhalphal.com"
+    "platformUrl": "https://chhalphal.com",
+    "dateCreated": "2025"
   }
 ]

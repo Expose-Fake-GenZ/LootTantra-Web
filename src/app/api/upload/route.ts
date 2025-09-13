@@ -5,7 +5,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { uploadFile, validateFile, generateFileKey } from "../../../lib/s3";
-import { EvidenceService } from "../../../lib/dynamodb";
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,31 +56,12 @@ export async function POST(request: NextRequest) {
 
         console.log(`✅ File uploaded successfully: ${uploadResult.url}`);
 
-        // Save evidence metadata to DynamoDB (if reportId provided)
-        let evidenceRecord = null;
-        if (reportId) {
-          try {
-            evidenceRecord = await EvidenceService.create({
-              contentId: reportId, // Using contentId as per the type definition
-              fileName: file.name,
-              fileType: file.type,
-              fileSize: file.size,
-              awsUrl: uploadResult.url,
-            });
-            console.log(`💾 Evidence record created: ${evidenceRecord.id}`);
-          } catch (dbError) {
-            console.warn("⚠️ Failed to save evidence metadata:", dbError);
-            // Continue with upload success even if DB save fails
-          }
-        }
-
         uploadResults.push({
           filename: file.name,
           size: uploadResult.size,
           type: uploadResult.contentType,
           url: uploadResult.url,
           s3Key: uploadResult.key,
-          evidenceId: evidenceRecord?.id,
         });
       } catch (error) {
         console.error(`❌ Failed to upload file ${file.name}:`, error);

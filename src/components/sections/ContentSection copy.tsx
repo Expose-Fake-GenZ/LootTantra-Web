@@ -7,14 +7,15 @@ import type { FilterOption, SortOption } from "@/components/ui/FilterMenu";
 import { ContentItem } from "@/types";
 import { useRouter } from "next/navigation";
 
-export default function ContentList({ reports }: { reports: ContentItem[] }) {
+export default function ContentSection() {
   const router = useRouter();
+  const [reports, setReports] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [previewFile, setPreviewFile] = useState<{
     url: string;
     type: string;
-    filename: string;
+    filename?: string;
     reportId?: string;
     fileIndex?: number;
   } | null>(null);
@@ -23,6 +24,19 @@ export default function ContentList({ reports }: { reports: ContentItem[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [filterBy, setFilterBy] = useState("all");
+
+  // Simulate API loading
+  useEffect(() => {
+    const loadReports = async () => {
+      // setLoading(true);
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setReports([]);
+      setLoading(false);
+    };
+
+    loadReports();
+  }, []);
 
   // Filter and sort reports
   const filteredAndSortedReports = useMemo(() => {

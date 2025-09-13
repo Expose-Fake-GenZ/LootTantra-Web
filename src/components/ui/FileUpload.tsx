@@ -332,4 +332,3 @@ export default function FileUpload({
 }
 
 // Export types for use in other components
-export type { FileUploadItem };

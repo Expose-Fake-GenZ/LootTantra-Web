@@ -18,9 +18,11 @@ export async function createPlatform(
   const item: Platform = {
     ...data,
     id: uuidv4(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
+
+  console.log("the item", item);
 
   await docClient.send(
     new PutCommand({
@@ -126,13 +128,14 @@ export async function deletePlatform(id: string): Promise<void> {
 
 // Create
 export async function createReport(
-  data: Omit<ContentItem, "id" | "createdAt" | "updatedAt">
+  data: Omit<ContentItem, "id" | "createdAt" | "updatedAt" | "status">
 ): Promise<ContentItem> {
   const item: ContentItem = {
     ...data,
     id: uuidv4(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    status: "pending",
   };
 
   await docClient.send(

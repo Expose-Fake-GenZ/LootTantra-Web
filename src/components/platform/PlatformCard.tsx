@@ -32,7 +32,7 @@ export default function PlatformCard({ platform, onClick }: PlatformCardProps) {
               <ExternalLink className="text-primary-red h-4 w-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
             </div>
             <span className="bg-primary-red inline-block rounded-full px-3 py-1 text-xs font-medium text-white">
-              {platform.category}
+              {platform.platformType}
             </span>
           </div>
           <AlertTriangle className="text-primary-red h-6 w-6 flex-shrink-0" />
@@ -52,7 +52,7 @@ export default function PlatformCard({ platform, onClick }: PlatformCardProps) {
             </span>
           </div>
           <span className="text-xs text-gray-600 transition-colors duration-300 dark:text-gray-400">
-            Created {formatDate(platform.createdAt)}
+            Created {formatDate(new Date(platform.dateCreated))}
           </span>
         </div>
       </div>

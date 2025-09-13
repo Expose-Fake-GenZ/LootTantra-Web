@@ -3,57 +3,60 @@ import platformsData from "@/data/platforms.json";
 import reportsData from "@/data/reports.json";
 
 // Transform raw JSON data to typed interfaces
-export function getPlatformsData(): Platform[] {
-  return platformsData.map((platform) => ({
-    ...platform,
-    category: "General", // Add default category since it's not in the JSON
-    createdAt: new Date(platform.createdAt),
-    updatedAt: new Date(platform.createdAt), // Use createdAt as fallback for updatedAt
-  }));
-}
+// export function getPlatformsData(): Platform[] {
+//   return platformsData.map((platform) => ({
+//     ...platform,
+//     createdAt: new Date(platform.createdAt),
+//     updatedAt: new Date(platform.createdAt),
+//   }));
+// }
 
-export function getReportsData(): ContentItem[] {
-  return reportsData.map((report) => ({
-    ...report,
-    category: report.category as "vandalism" | "violence", // Type assertion for category
-    status: report.status as "pending" | "approved" | "rejected", // Type assertion for status
-    createdAt: new Date(report.createdAt),
-    updatedAt: new Date(report.updatedAt),
-    evidenceFiles: report.evidenceFiles.map((file) => ({
-      ...file,
-      uploadedAt: new Date(file.uploadedAt),
-    })),
-  }));
-}
+// export function getReportsData(): ContentItem[] {
+//   return reportsData.map((report) => ({
+//     ...report,
+//     category: report.category as "vandalism" | "violence", // Type assertion for category
+//     status: report.status as "pending" | "approved" | "rejected", // Type assertion for status
+//     createdAt: new Date(report.createdAt),
+//     updatedAt: new Date(report.updatedAt),
+//     evidenceFiles: report.evidenceFiles.map((file) => ({
+//       ...file,
+//       uploadedAt: new Date(file.uploadedAt),
+//     })),
+//   }));
+// }
 
 // Server-side data fetching functions for optimal performance
 export function getFilteredPlatforms({
+  data = [],
   search = "",
-  category = "all",
+  platformType = "all",
   sortBy = "updated",
   page = 1,
   limit = 10,
 }: {
+  data: Platform[];
   search?: string;
-  category?: string;
+  platformType?: string;
   sortBy?: string;
   page?: number;
   limit?: number;
 }) {
-  let platforms = getPlatformsData();
+  let platforms = data;
 
   // Apply search filter
   if (search) {
     platforms = platforms.filter(
       (platform) =>
-        platform.name.toLowerCase().includes(search.toLowerCase()) ||
-        platform.description.toLowerCase().includes(search.toLowerCase())
+        platform?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        platform?.description?.toLowerCase().includes(search?.toLowerCase())
     );
   }
 
   // Apply category filter
-  if (category !== "all") {
-    platforms = platforms.filter((platform) => platform.category === category);
+  if (platformType !== "all") {
+    platforms = platforms.filter(
+      (platform) => platform.platformType === platformType
+    );
   }
 
   // Apply sorting
@@ -65,8 +68,6 @@ export function getFilteredPlatforms({
         return (
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
-      case "reports":
-        return b.contentCount - a.contentCount;
       default:
         return 0;
     }
@@ -78,9 +79,9 @@ export function getFilteredPlatforms({
   const paginatedPlatforms = platforms.slice(startIndex, endIndex);
 
   // Get unique categories
-  const categories = Array.from(
-    new Set(getPlatformsData().map((p) => p.category))
-  );
+  const platformTypes = Array.from(
+    new Set(data.map((p) => p.platformType))
+  ).filter(Boolean);
 
   return {
     platforms: paginatedPlatforms,
@@ -91,12 +92,13 @@ export function getFilteredPlatforms({
       totalPages: Math.ceil(platforms.length / limit),
       hasMore: endIndex < platforms.length,
     },
-    categories,
+    platformTypes,
     total: platforms.length,
   };
 }
 
 export function getFilteredReports({
+  data = [],
   search = "",
   category = "all",
   status = "all",
@@ -104,6 +106,7 @@ export function getFilteredReports({
   page = 1,
   limit = 10,
 }: {
+  data: ContentItem[];
   search?: string;
   category?: string;
   status?: string;
@@ -111,7 +114,7 @@ export function getFilteredReports({
   page?: number;
   limit?: number;
 }) {
-  let reports = getReportsData();
+  let reports = data;
 
   // Apply search filter
   if (search) {

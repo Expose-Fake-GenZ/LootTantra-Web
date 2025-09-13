@@ -10,6 +10,7 @@ import { Upload, AlertCircle, CheckCircle, RefreshCw } from "lucide-react";
 import FileUpload, { type FileUploadItem } from "./FileUpload";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import Button from "./Button";
+import { fileStatus } from "@/app/submit-evidence/page";
 
 interface FileUploadWithProgressProps {
   onUploadComplete?: (results: any[]) => void;
@@ -20,6 +21,7 @@ interface FileUploadWithProgressProps {
   disabled?: boolean;
   className?: string;
   autoUpload?: boolean;
+  setStatus?: React.Dispatch<fileStatus>;
 }
 
 export default function FileUploadWithProgress({
@@ -31,6 +33,7 @@ export default function FileUploadWithProgress({
   disabled = false,
   className = "",
   autoUpload = false,
+  setStatus,
 }: FileUploadWithProgressProps) {
   const [files, setFiles] = useState<FileUploadItem[]>([]);
   const [uploadResults, setUploadResults] = useState<unknown[]>([]);
@@ -76,12 +79,18 @@ export default function FileUploadWithProgress({
             setFiles((prev) =>
               prev.map((f) => (f.id === fileId ? { ...f, progress } : f))
             );
+            setStatus?.("pending");
           },
           onSuccess: (fileId, result) => {
             setFiles((prev) =>
               prev.map((f) =>
                 f.id === fileId
-                  ? { ...f, status: "success", progress: 100, url: result.url }
+                  ? {
+                      ...f,
+                      status: "success",
+                      progress: 100,
+                      url: result.url,
+                    }
                   : f
               )
             );
@@ -101,12 +110,12 @@ export default function FileUploadWithProgress({
         // Notify parent component
         if (response.success) {
           onUploadComplete?.(response.files);
+          setStatus?.("completed");
         } else {
           onUploadError?.(response.errors?.[0]?.error || "Upload failed");
+          setStatus?.("completed");
         }
       } catch (error) {
-        console.error("Upload error:", error);
-
         // Mark all uploading files as error
         setFiles((prev) =>
           prev.map((f) =>

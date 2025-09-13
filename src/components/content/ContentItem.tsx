@@ -1,25 +1,32 @@
 "use client";
 import { Card } from "@/components/ui";
 import { ContentItem as ContentItemType } from "@/types";
-import { Calendar, FileText, Image, Video, Download, Eye } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  Image as ImageIcon,
+  Video,
+  Download,
+  Eye,
+} from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { useState } from "react";
+import Image from "next/image";
 
 interface ContentItemProps {
   content: ContentItemType;
-  onPreview?: (fileUrl: string, fileType: string) => void;
+  onPreview?: (url: string, type: string) => void;
 }
 
 export default function ContentItem({ content, onPreview }: ContentItemProps) {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
-
   const handleImageError = (fileId: string) => {
     setImageErrors((prev) => new Set(prev).add(fileId));
   };
 
-  const getFileIcon = (fileType: string) => {
-    if (fileType.startsWith("image/")) return Image;
-    if (fileType.startsWith("video/")) return Video;
+  const getFileIcon = (type: string) => {
+    if (type.startsWith("image/")) return ImageIcon;
+    if (type.startsWith("video/")) return Video;
     return FileText;
   };
 
@@ -85,24 +92,26 @@ export default function ContentItem({ content, onPreview }: ContentItemProps) {
           {/* Image Preview Grid */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
             {content.evidenceFiles
-              .filter((file) => file.fileType.startsWith("image/"))
+              .filter((file) => file.type.startsWith("image/"))
               .slice(0, 4)
               .map((file) => (
                 <div
-                  key={file.id}
+                  key={file.s3Key}
                   className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg bg-gray-100 transition-colors duration-300 dark:bg-gray-700"
-                  onClick={() => onPreview?.(file.awsUrl, file.fileType)}
+                  onClick={() => onPreview?.(file.url, file.type)}
                 >
-                  {!imageErrors.has(file.id) ? (
-                    <img
-                      src={file.awsUrl}
-                      alt={file.fileName}
+                  {!imageErrors.has(file.s3Key) ? (
+                    <Image
+                      src={file.url}
+                      alt={file.filename}
                       className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
-                      onError={() => handleImageError(file.id)}
+                      onError={() => handleImageError(file.s3Key)}
+                      width={300}
+                      height={300}
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                      <Image className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                      <ImageIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
                     </div>
                   )}
                   <div className="bg-opacity-0 group-hover:bg-opacity-20 absolute inset-0 flex items-center justify-center bg-black transition-all duration-200">
@@ -115,28 +124,27 @@ export default function ContentItem({ content, onPreview }: ContentItemProps) {
           {/* File List */}
           <div className="space-y-2">
             {content.evidenceFiles.map((file) => {
-              const FileIcon = getFileIcon(file.fileType);
+              const FileIcon = getFileIcon(file.type);
               return (
                 <div
-                  key={file.id}
+                  key={file.s3Key}
                   className="flex items-center justify-between rounded-lg bg-gray-50 p-3 transition-colors duration-300 dark:bg-gray-700"
                 >
                   <div className="flex items-center space-x-3">
                     <FileIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                     <div>
                       <p className="text-primary-black text-sm font-medium transition-colors duration-300 dark:text-white">
-                        {file.fileName}
+                        {file.filename}
                       </p>
                       <p className="text-primary-black-light text-xs transition-colors duration-300 dark:text-gray-400">
-                        {file.fileType} •{" "}
-                        {(file.fileSize / 1024 / 1024).toFixed(2)} MB
+                        {file.type} • {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    {file.fileType.startsWith("image/") && (
+                    {file.type.startsWith("image/") && (
                       <button
-                        onClick={() => onPreview?.(file.awsUrl, file.fileType)}
+                        onClick={() => onPreview?.(file.url, file.type)}
                         className="rounded-lg bg-white p-2 text-gray-600 transition-colors duration-200 hover:bg-gray-100 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
                         title="Preview"
                       >
@@ -144,8 +152,8 @@ export default function ContentItem({ content, onPreview }: ContentItemProps) {
                       </button>
                     )}
                     <a
-                      href={file.awsUrl}
-                      download={file.fileName}
+                      href={file.url}
+                      download={file.filename}
                       className="rounded-lg bg-white p-2 text-gray-600 transition-colors duration-200 hover:bg-gray-100 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
                       title="Download"
                     >
@@ -163,11 +171,11 @@ export default function ContentItem({ content, onPreview }: ContentItemProps) {
       <div className="text-primary-black-light flex items-center justify-between border-t border-gray-200 pt-4 text-sm transition-colors duration-300 dark:border-gray-600 dark:text-gray-400">
         <div className="flex items-center space-x-1">
           <Calendar className="h-4 w-4" />
-          <span>Created {formatDate(content.createdAt)}</span>
+          <span>Created {formatDate(new Date(content.createdAt))}</span>
         </div>
         <div className="flex items-center space-x-1">
           <Calendar className="h-4 w-4" />
-          <span>Updated {formatDate(content.updatedAt)}</span>
+          <span>Updated {formatDate(new Date(content.createdAt))}</span>
         </div>
       </div>
     </Card>

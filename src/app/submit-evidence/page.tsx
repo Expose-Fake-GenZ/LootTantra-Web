@@ -5,35 +5,43 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout } from "@/components/layout";
 import FileUploadWithProgress from "../../components/ui/FileUploadWithProgress";
 import { Button, Card } from "../../components/ui";
 import { ArrowLeft, Upload, CheckCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { addReport } from "../actions/report-actions";
+import { FileProps } from "@/types";
+import { useRouter } from "next/navigation";
+
+export type fileStatus = "idle" | "pending" | "completed";
 
 export default function SubmitPage() {
-  const [uploadResults, setUploadResults] = useState<any[]>([]);
+  const router = useRouter();
+
+  const [uploadResults, setUploadResults] = useState<FileProps[]>([]);
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fileStatus, setFileStatus] = useState<fileStatus>("idle");
+  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     title: "",
-    incidentType: "",
+    category: "",
     description: "",
     dateOccurred: "",
     supportingUrl: "",
     name: "",
     email: "",
+    evidenceFiles: [],
   });
 
-  const handleUploadComplete = (results: unknown[]) => {
-    console.log("Upload complete:", results);
+  const handleUploadComplete = (results: FileProps[]) => {
     setUploadResults(results);
     setError("");
   };
 
   const handleUploadError = (errorMessage: string) => {
-    console.error("Upload error:", errorMessage);
     setError(errorMessage);
   };
 
@@ -60,26 +68,30 @@ export default function SubmitPage() {
     try {
       // Here you would submit the form data along with the uploaded files
       // For now, just simulate a submission
-      await new Promise((resolve) => setTimeout(resolve, 2000));
 
+      await addReport({ ...formData, evidenceFiles: uploadResults });
       // Reset form after successful submission
-      setFormData({
-        title: "",
-        incidentType: "",
-        description: "",
-        dateOccurred: "",
-        supportingUrl: "",
-        name: "",
-        email: "",
-      });
-      setUploadResults([]);
+      // setFormData({
+      //   title: "",
+      //   incidentType: "",
+      //   description: "",
+      //   dateOccurred: "",
+      //   supportingUrl: "",
+      //   name: "",
+      //   email: "",
+      //   evidenceFiles: [],
+      // });
+      // setUploadResults([]);
 
-      alert(
-        "Submission successful! Thank you for contributing to platform transparency."
-      );
+      setMessage("Platform submitted Successfully");
+
+      alert("Platform is submitted successfully");
+
+      router.push("/#reports");
     } catch (err) {
       setError("Failed to submit report. Please try again.");
     } finally {
+      setMessage("");
       setIsSubmitting(false);
     }
   };
@@ -107,6 +119,14 @@ export default function SubmitPage() {
               </p>
             </div>
 
+            {!!message && (
+              <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+                <p className="mt-2 text-sm text-green-700 dark:text-green-300">
+                  {message}
+                </p>
+              </div>
+            )}
+
             {/* Submission Form */}
             <Card>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -133,8 +153,8 @@ export default function SubmitPage() {
                       Incident Type *
                     </label>
                     <select
-                      name="incidentType"
-                      value={formData.incidentType}
+                      name="category"
+                      value={formData.category}
                       onChange={handleInputChange}
                       required
                       className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
@@ -249,6 +269,7 @@ export default function SubmitPage() {
                     onUploadError={handleUploadError}
                     maxFiles={5}
                     autoUpload={true}
+                    setStatus={setFileStatus}
                   />
                 </div>
 
@@ -299,9 +320,10 @@ export default function SubmitPage() {
                     disabled={
                       isSubmitting ||
                       !formData.title ||
-                      !formData.incidentType ||
+                      !formData.category ||
                       !formData.description ||
-                      !formData.dateOccurred
+                      !formData.dateOccurred ||
+                      fileStatus === "pending"
                     }
                     className="min-w-[120px]"
                   >

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 interface PlatformListProps {
   platforms: Platform[];
-  categories?: string[];
+  platformTypes?: string[];
   totalCount?: number;
   showLoadMore?: boolean;
   loading?: boolean;
@@ -20,7 +20,7 @@ interface PlatformListProps {
 
 export default function PlatformList({
   platforms,
-  categories = [],
+  platformTypes = [],
   totalCount,
   showLoadMore = false,
   loading = false,
@@ -28,7 +28,7 @@ export default function PlatformList({
   hasMore = false,
 }: PlatformListProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedType, setSelectedType] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("updated");
 
@@ -38,34 +38,37 @@ export default function PlatformList({
   const filterOptions: FilterOption[] = useMemo(() => {
     // Use provided categories or extract from platforms
     const availableCategories =
-      categories.length > 0
-        ? categories
-        : Array.from(new Set(platforms.map((p) => p.category)));
+      platformTypes.length > 0
+        ? platformTypes
+        : Array.from(new Set(platforms.map((p) => p.platformType)));
 
     return [
       { value: "all", label: "All Categories" },
-      ...availableCategories.map((category) => ({
-        value: category,
-        label: category,
+      ...availableCategories.map((type) => ({
+        value: type,
+        label: type,
       })),
     ];
-  }, [platforms, categories]);
+  }, [platforms, platformTypes]);
 
   const sortOptions: SortOption[] = [
     { value: "updated", label: "Recently Updated" },
     { value: "name", label: "Name A-Z" },
-    { value: "reports", label: "Most Reports" },
   ];
 
   // Filter and sort platforms
   const filteredPlatforms = platforms
     .filter((platform) => {
       const matchesSearch =
-        platform.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        platform.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "all" || platform.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+        platform?.name?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+        platform?.description
+          ?.toLowerCase()
+          .includes(searchTerm?.toLowerCase());
+      const matchesType =
+        selectedType === "all" || platform.platformType === selectedType;
+
+      console.log("the filtered will be", selectedType, platform.platformType);
+      return matchesSearch && matchesType;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -75,8 +78,6 @@ export default function PlatformList({
           return (
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
           );
-        case "reports":
-          return b.contentCount - a.contentCount;
         default:
           return 0;
       }
@@ -108,8 +109,8 @@ export default function PlatformList({
         onSearchChange={setSearchTerm}
         searchPlaceholder="Search platforms..."
         filterOptions={filterOptions}
-        selectedFilter={selectedCategory}
-        onFilterChange={setSelectedCategory}
+        selectedFilter={selectedType}
+        onFilterChange={setSelectedType}
         sortOptions={sortOptions}
         selectedSort={sortBy}
         onSortChange={setSortBy}

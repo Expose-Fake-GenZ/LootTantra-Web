@@ -3,24 +3,55 @@ export interface Platform {
   id: string;
   name: string;
   description: string;
-  category: string;
-  contentCount: number;
-  createdAt: Date;
-  updatedAt: Date;
+  platformType: string;
+  // contentCount: number;
+  dateCreated: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
   platformUrl: string;
+}
+
+export interface PlatformFormData {
+  name: string;
+  platformType: string;
+  description: string;
+  dateCreated: string;
+  platformUrl: string;
+}
+
+export interface ReportFormData {
+  title: string;
+  category: string;
+  description: string;
+  dateOccurred: string;
+  supportingUrl?: string;
+  name?: string;
+  email?: string;
+  evidenceFiles: FileProps[];
+}
+
+export interface FileProps {
+  filename: string;
+  s3Key: string;
+  size: number;
+  type: string;
+  url: string;
 }
 
 // Content Model
 export interface ContentItem {
   id: string;
-  platformId: string;
+  createdAt: string;
+  updatedAt: string;
   title: string;
+  category: string;
   description: string;
-  category: "vandalism" | "violence";
-  evidenceFiles: EvidenceFile[];
+  dateOccurred: string;
+  supportingUrl?: string;
+  name?: string;
+  email?: string;
+  evidenceFiles: FileProps[];
   status: "pending" | "approved" | "rejected";
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 // Evidence File Model

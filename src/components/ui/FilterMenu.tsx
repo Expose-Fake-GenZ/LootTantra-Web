@@ -69,6 +69,7 @@ export default function FilterMenu({
   showReportAdd,
   onReportAdd,
 }: FilterMenuProps) {
+  console.log("the filter options", filterOptions);
   return (
     <div className="space-y-6">
       {/* Search and Filter Controls */}

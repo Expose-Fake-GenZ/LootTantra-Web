@@ -1,41 +1,28 @@
 /**
- * Evidence Submission Page
- * Main page for users to submit evidence of platform incidents
+ * Platform Submission Page
+ * Main page for users to submit platform
  */
 
 "use client";
 
 import React, { useState } from "react";
 import { Layout } from "@/components/layout";
-import FileUploadWithProgress from "../../components/ui/FileUploadWithProgress";
 import { Button, Card } from "../../components/ui";
 import { ArrowLeft, Upload, CheckCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { addPlatform } from "../actions/platform-actions";
+import { v4 as uuid } from "uuid";
 
 export default function SubmitPage() {
-  const [uploadResults, setUploadResults] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    title: "",
-    incidentType: "",
-    description: "",
-    dateOccurred: "",
-    supportingUrl: "",
     name: "",
-    email: "",
+    platformType: "",
+    description: "",
+    dateCreated: "",
+    platformUrl: "",
   });
-
-  const handleUploadComplete = (results: unknown[]) => {
-    console.log("Upload complete:", results);
-    setUploadResults(results);
-    setError("");
-  };
-
-  const handleUploadError = (errorMessage: string) => {
-    console.error("Upload error:", errorMessage);
-    setError(errorMessage);
-  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -48,35 +35,23 @@ export default function SubmitPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Check if at least one file is uploaded
-    if (uploadResults.length === 0) {
-      setError("Please upload at least one evidence file before submitting.");
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      // Here you would submit the form data along with the uploaded files
-      // For now, just simulate a submission
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Reset form after successful submission
-      setFormData({
-        title: "",
-        incidentType: "",
-        description: "",
-        dateOccurred: "",
-        supportingUrl: "",
-        name: "",
-        email: "",
-      });
-      setUploadResults([]);
+      await addPlatform(formData);
 
       alert(
         "Submission successful! Thank you for contributing to platform transparency."
       );
+
+      setError("");
+      setFormData({
+        name: "",
+        platformType: "",
+        description: "",
+        dateCreated: "",
+        platformUrl: "",
+      });
     } catch (err) {
       setError("Failed to submit report. Please try again.");
     } finally {
@@ -99,26 +74,26 @@ export default function SubmitPage() {
                 Back to Home
               </Link>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Submit Evidence
+                Submit Platform
               </h1>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Help build transparency by reporting platform incidents with
-                evidence
+                Help build transparency by reporting platform to advocate
+                against vandalism
               </p>
             </div>
 
             {/* Submission Form */}
             <Card>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Evidence Title */}
+                {/* Platform Name */}
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Evidence Title *
+                    Platform Name *
                   </label>
                   <input
                     type="text"
-                    name="title"
-                    value={formData.title}
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     required
                     placeholder="Brief, descriptive title for this evidence"
@@ -127,35 +102,35 @@ export default function SubmitPage() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {/* Incident Type */}
+                  {/* Platform Type */}
                   <div>
                     <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Incident Type *
+                      Platform Type *
                     </label>
                     <select
-                      name="incidentType"
-                      value={formData.incidentType}
+                      name="platformType"
+                      value={formData.platformType}
                       onChange={handleInputChange}
                       required
                       className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
-                      <option value="">Select incident type</option>
-                      <option value="genz-protest">GenZ protest</option>
-                      <option value="corruption">Corruption</option>
-                      <option value="violence">Violence</option>
+                      <option value="">Select Platform type</option>
+                      <option value="forum">Forum</option>
+                      <option value="portal">Portal</option>
+                      <option value="website">Website</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
 
-                  {/* Date Occurred */}
+                  {/* Date Created */}
                   <div>
                     <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Date Occurred *
+                      Date Created *
                     </label>
                     <input
                       type="date"
-                      name="dateOccurred"
-                      value={formData.dateOccurred}
+                      name="dateCreated"
+                      value={formData.dateCreated}
                       onChange={handleInputChange}
                       required
                       className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
@@ -179,63 +154,23 @@ export default function SubmitPage() {
                   />
                 </div>
 
-                {/* Supporting URL */}
+                {/* Platform URL */}
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Supporting URL (optional)
+                    Platform URL
                   </label>
                   <input
                     type="url"
-                    name="supportingUrl"
-                    value={formData.supportingUrl}
+                    name="platformUrl"
+                    value={formData.platformUrl}
                     onChange={handleInputChange}
-                    placeholder="https://example.com/link-to-evidence"
+                    placeholder="https://example.com"
                     className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Optional: Link to additional evidence or source material
-                  </p>
                 </div>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {/* Name */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Name (optional)
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Your name"
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Email (optional)
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="your.email@example.com"
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    />
-                  </div>
-                </div>
-
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Optional: Provide your name and email if you want updates on
-                  your submission
-                </p>
 
                 {/* File Upload Section */}
-                <div>
+                {/* <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Evidence Files *
                   </label>
@@ -250,7 +185,7 @@ export default function SubmitPage() {
                     maxFiles={5}
                     autoUpload={true}
                   />
-                </div>
+                </div> */}
 
                 {/* Error Display */}
                 {error && (
@@ -270,7 +205,7 @@ export default function SubmitPage() {
                 )}
 
                 {/* Upload Results */}
-                {uploadResults.length > 0 && (
+                {/* {uploadResults.length > 0 && (
                   <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
                     <div className="flex">
                       <CheckCircle className="h-5 w-5 flex-shrink-0 text-green-400" />
@@ -285,7 +220,7 @@ export default function SubmitPage() {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Submit Button */}
                 <div className="flex justify-end space-x-4">
@@ -298,10 +233,10 @@ export default function SubmitPage() {
                     type="submit"
                     disabled={
                       isSubmitting ||
-                      !formData.title ||
-                      !formData.incidentType ||
+                      !formData.name ||
+                      !formData.platformUrl ||
                       !formData.description ||
-                      !formData.dateOccurred
+                      !formData.platformType
                     }
                     className="min-w-[120px]"
                   >
@@ -329,25 +264,18 @@ export default function SubmitPage() {
               <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-start space-x-2">
                   <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
-                  <p>
-                    Provide clear, verifiable evidence (screenshots, links,
-                    documents)
-                  </p>
+                  <p>Provide clear, verifiable platform</p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
-                  <p>Include detailed context about what happened and when</p>
+                  <p>Include detailed context about the platform</p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
                   <p>
                     Protect privacy by redacting personal information not
-                    relevant to the incident
+                    relevant to the platform
                   </p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
-                  <p>All submissions undergo verification before publication</p>
                 </div>
               </div>
             </Card>
