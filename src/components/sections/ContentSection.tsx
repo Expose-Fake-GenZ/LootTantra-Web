@@ -5,8 +5,10 @@ import { ReportList, FilePreview } from "@/components/content";
 import { FilterMenu } from "@/components/ui";
 import type { FilterOption, SortOption } from "@/components/ui/FilterMenu";
 import { ContentItem } from "@/types";
+import { useRouter } from "next/navigation";
 
 export default function ContentSection() {
+  const router = useRouter();
   const [reports, setReports] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -463,6 +465,8 @@ export default function ContentSection() {
           totalCount={reports.length}
           filteredCount={filteredAndSortedReports.length}
           itemType="reports"
+          showReportAdd
+          onReportAdd={() => router.push("/submit-evidence")}
         />
 
         {/* Report List */}

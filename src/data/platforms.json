@@ -14,5 +14,29 @@
     "contentCount": 12,
     "createdAt": "2025",
     "platformUrl": "https://forum.bhadra24.com"
+  },
+  {
+    "id": "3",
+    "name": "Protest against corruption",
+    "description": "Online platform to provide trusted updates, connect volunteers, and provide emergency resources to protect peaceful protesters.",
+    "contentCount": 12,
+    "createdAt": "2025",
+    "platformUrl": "https://youthagainstcorruption.com"
+  },
+  {
+    "id": "4",
+    "name": "Chhalphal",
+    "description": "Chhalphal delivers news with uncompromising accuracy, simplifies information into concise formats, Connecting Nepali communities globally, empowers community-driven journalism",
+    "contentCount": 12,
+    "createdAt": "2025",
+    "platformUrl": "https://chhalphal.com"
+  },
+  {
+    "id": "5",
+    "name": "Looters - Community Safety Reporting System",
+    "description": "Community-powered platform for reporting and tracking suspicious individuals. Help keep your community safe with real-time reports.",
+    "contentCount": 1617,
+    "createdAt": "2025",
+    "platformUrl": "https://chhalphal.com"
   }
 ]

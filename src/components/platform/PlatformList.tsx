@@ -6,6 +6,7 @@ import PlatformCard from "./PlatformCard";
 import { Button, FilterMenu } from "@/components/ui";
 import type { FilterOption, SortOption } from "@/components/ui/FilterMenu";
 import { Search, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PlatformListProps {
   platforms: Platform[];
@@ -30,6 +31,8 @@ export default function PlatformList({
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("updated");
+
+  const router = useRouter();
 
   // Get unique categories and create filter options
   const filterOptions: FilterOption[] = useMemo(() => {
@@ -116,6 +119,8 @@ export default function PlatformList({
         totalCount={totalCount || platforms.length}
         filteredCount={filteredPlatforms.length}
         itemType="platforms"
+        showPlatformAdd
+        onPlatformAdd={() => router.push("/submit-platform")}
       />
 
       {/* Platform Grid/List */}
