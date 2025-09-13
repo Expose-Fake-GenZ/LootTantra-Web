@@ -6,7 +6,7 @@ import { ContentItem as ContentItemType } from "@/types";
 import {
   Calendar,
   FileText,
-  Image,
+  Image as ImageIcon,
   Video,
   ChevronLeft,
   ChevronRight,
@@ -14,13 +14,14 @@ import {
   Download,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import Image from "next/image";
 
 interface ReportCardProps {
   content: ContentItemType;
   onPreview?: (
-    fileUrl: string,
-    fileType: string,
-    fileName?: string,
+    url: string,
+    type: string,
+    filename: string,
     reportId?: string,
     fileIndex?: number
   ) => void;
@@ -33,8 +34,7 @@ export default function ReportCard({ content, onPreview }: ReportCardProps) {
   // Filter media files (images and videos)
   const mediaFiles =
     content.evidenceFiles?.filter(
-      (file) =>
-        file.fileType.startsWith("image/") || file.fileType.startsWith("video/")
+      (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
     ) || [];
 
   const handleImageError = (fileId: string) => {
@@ -81,25 +81,27 @@ export default function ReportCard({ content, onPreview }: ReportCardProps) {
         {/* Media Carousel */}
         {mediaFiles.length > 0 && (
           <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
-            {mediaFiles[currentMediaIndex].fileType.startsWith("image/") ? (
-              !imageErrors.has(mediaFiles[currentMediaIndex].id) ? (
-                <img
-                  src={mediaFiles[currentMediaIndex].awsUrl}
-                  alt={mediaFiles[currentMediaIndex].fileName}
+            {mediaFiles[currentMediaIndex].type.startsWith("image/") ? (
+              !imageErrors.has(mediaFiles[currentMediaIndex].s3Key) ? (
+                <Image
+                  src={mediaFiles[currentMediaIndex].url}
+                  alt={mediaFiles[currentMediaIndex].filename}
                   className="h-full w-full object-cover"
                   onError={() =>
-                    handleImageError(mediaFiles[currentMediaIndex].id)
+                    handleImageError(mediaFiles[currentMediaIndex].s3Key)
                   }
+                  width={300}
+                  height={300}
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <Image className="h-12 w-12 text-gray-400 dark:text-gray-500" />
+                  <ImageIcon className="h-12 w-12 text-gray-400 dark:text-gray-500" />
                 </div>
               )
             ) : (
               <div className="relative h-full w-full">
                 <video
-                  src={mediaFiles[currentMediaIndex].awsUrl}
+                  src={mediaFiles[currentMediaIndex].url}
                   className="h-full w-full object-cover"
                   controls={false}
                   muted
@@ -152,9 +154,9 @@ export default function ReportCard({ content, onPreview }: ReportCardProps) {
             <button
               onClick={() =>
                 onPreview?.(
-                  mediaFiles[currentMediaIndex].awsUrl,
-                  mediaFiles[currentMediaIndex].fileType,
-                  mediaFiles[currentMediaIndex].fileName,
+                  mediaFiles[currentMediaIndex].url,
+                  mediaFiles[currentMediaIndex].type,
+                  mediaFiles[currentMediaIndex].filename,
                   content.id,
                   currentMediaIndex
                 )
@@ -180,11 +182,11 @@ export default function ReportCard({ content, onPreview }: ReportCardProps) {
             >
               {content.category}
             </span>
-            <span
+            {/* <span
               className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(content.status)}`}
             >
               {content.status}
-            </span>
+            </span> */}
           </div>
         </div>
 
@@ -205,7 +207,7 @@ export default function ReportCard({ content, onPreview }: ReportCardProps) {
             </div>
             <div className="flex items-center space-x-1">
               <Calendar className="h-4 w-4" />
-              <span>{formatDate(content.createdAt)}</span>
+              <span>{formatDate(new Date(content.createdAt))}</span>
             </div>
           </div>
         )}

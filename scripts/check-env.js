@@ -42,7 +42,17 @@ envFiles.forEach((file) => {
 
 const requiredVars = {
   client: ["NEXT_PUBLIC_BASE_URL", "NEXT_PUBLIC_API_URL"],
-  server: ["BASE_URL"],
+  server: [
+    "BASE_URL",
+    "AWS_REGION",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "DYNAMODB_TABLE_PLATFORMS",
+    "DYNAMODB_TABLE_REPORTS",
+    "DYNAMODB_TABLE_EVIDENCE",
+    "S3_BUCKET_NAME",
+    "S3_BUCKET_REGION",
+  ],
 };
 
 function checkEnvironment() {

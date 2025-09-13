@@ -1,10 +1,14 @@
+import { fetchPlatforms } from "@/app/actions/platform-actions";
 import { PlatformList } from "@/components/platform";
 import { getFilteredPlatforms } from "@/lib/data-utils";
 
-export default function PlatformsSection() {
+export default async function PlatformsSection() {
   // Server-side data fetching - most performant approach for static JSON data
   // This runs at build time or request time on the server, no client-side loading
+  const { platforms } = await fetchPlatforms();
+
   const initialData = getFilteredPlatforms({
+    data: platforms,
     page: 1,
     limit: 12, // Load more items initially for better UX
   });
@@ -30,7 +34,7 @@ export default function PlatformsSection() {
         {/* Platform List - Pass server-side data directly */}
         <PlatformList
           platforms={initialData.platforms}
-          categories={initialData.categories}
+          platformTypes={initialData.platformTypes}
           totalCount={initialData.total}
           showLoadMore={initialData.pagination.hasMore}
         />

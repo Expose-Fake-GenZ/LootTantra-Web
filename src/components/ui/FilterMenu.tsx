@@ -1,6 +1,7 @@
 "use client";
 
-import { Search, Filter, Grid, List } from "lucide-react";
+import { Search, Filter, Grid, List, FileText, Shield } from "lucide-react";
+import { Button } from ".";
 
 export interface FilterOption {
   value: string;
@@ -38,6 +39,12 @@ interface FilterMenuProps {
   totalCount: number;
   filteredCount: number;
   itemType: string; // "reports", "platforms", etc.
+
+  showPlatformAdd?: boolean;
+  onPlatformAdd?: () => void;
+
+  showReportAdd?: boolean;
+  onReportAdd?: () => void;
 }
 
 export default function FilterMenu({
@@ -57,7 +64,12 @@ export default function FilterMenu({
   totalCount,
   filteredCount,
   itemType,
+  showPlatformAdd,
+  onPlatformAdd,
+  showReportAdd,
+  onReportAdd,
 }: FilterMenuProps) {
+  console.log("the filter options", filterOptions);
   return (
     <div className="space-y-6">
       {/* Search and Filter Controls */}
@@ -132,6 +144,20 @@ export default function FilterMenu({
                 <List className="h-5 w-5" />
               </button>
             </div>
+          )}
+
+          {showPlatformAdd && (
+            <Button onClick={onPlatformAdd} size="sm">
+              <Shield className="mr-2 h-5 w-5" />
+              Submit Platform
+            </Button>
+          )}
+
+          {showReportAdd && (
+            <Button onClick={onReportAdd} size="sm">
+              <Shield className="mr-2 h-5 w-5" />
+              Submit Evidence
+            </Button>
           )}
         </div>
       </div>

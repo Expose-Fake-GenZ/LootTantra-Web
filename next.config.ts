@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
       "upload.wikimedia.org", // For platform logos
       "assets-global.website-files.com", // For Discord logo
       "sample-videos.com", // For demo videos
+      "genz-protest-video-storage.s3.ap-south-1.amazonaws.com",
     ],
   },
 

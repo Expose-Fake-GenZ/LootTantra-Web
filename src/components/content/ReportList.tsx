@@ -9,9 +9,9 @@ interface ReportListProps {
   reports: ContentItemType[];
   loading?: boolean;
   onPreview?: (
-    fileUrl: string,
-    fileType: string,
-    fileName?: string,
+    url: string,
+    type: string,
+    filename: string,
     reportId?: string,
     fileIndex?: number
   ) => void;

@@ -2,6 +2,7 @@
 
 import { Button, Card } from "@/components/ui";
 import { Upload, Shield, CheckCircle, AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function SubmitSection() {
   return (
@@ -101,10 +102,12 @@ export default function SubmitSection() {
                 </p>
               </div>
 
-              <Button size="lg" className="w-full">
-                <Upload className="mr-2 h-5 w-5" />
-                Open Submission Form
-              </Button>
+              <Link href="/submit-evidence">
+                <Button size="lg" className="w-full">
+                  <Upload className="mr-2 h-5 w-5" />
+                  Open Submission Form
+                </Button>
+              </Link>
 
               <div className="text-primary-black-light border-t pt-4 text-xs dark:border-gray-700 dark:text-gray-300">
                 <p>

@@ -33,17 +33,25 @@ export default function Header() {
           <div className="hidden items-center space-x-6 md:flex">
             <nav className="flex items-center space-x-4">
               <Link
-                href="#platforms"
+                href="/#platforms"
                 className="font-medium text-gray-600 transition-colors duration-200 hover:text-red-600 dark:text-gray-300"
               >
                 Platforms
               </Link>
               <Link
-                href="#submit"
+                href="/submit-evidence"
                 className="font-medium text-gray-600 transition-colors duration-200 hover:text-red-600 dark:text-gray-300"
               >
                 Submit Report
               </Link>
+              {process.env.NODE_ENV === "development" && (
+                <Link
+                  href="/upload-test"
+                  className="font-medium text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:text-blue-400"
+                >
+                  Upload Test
+                </Link>
+              )}
             </nav>
 
             <div className="flex items-center space-x-3 border-l border-gray-200 pl-6 dark:border-gray-700">
@@ -97,14 +105,14 @@ export default function Header() {
           <div className="border-t border-gray-200 py-4 md:hidden dark:border-gray-700">
             <nav className="flex flex-col space-y-3">
               <Link
-                href="#platforms"
+                href="/#platforms"
                 className="py-2 font-medium text-gray-600 transition-colors duration-200 hover:text-red-600 dark:text-gray-300"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Platforms
               </Link>
               <Link
-                href="#submit"
+                href="/submit-evidence"
                 className="py-2 font-medium text-gray-600 transition-colors duration-200 hover:text-red-600 dark:text-gray-300"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

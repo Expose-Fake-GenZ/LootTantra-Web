@@ -9,16 +9,17 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { EvidenceFile } from "@/types";
+import { FileProps } from "@/types";
+import Image from "next/image";
 
 interface FilePreviewProps {
   isOpen: boolean;
   onClose: () => void;
-  fileUrl: string;
-  fileName?: string;
-  fileType: string;
+  url: string;
+  filename?: string;
+  type: string;
   // New props for navigation
-  allFiles?: EvidenceFile[];
+  allFiles?: FileProps[];
   currentIndex?: number;
   onNavigate?: (index: number) => void;
 }
@@ -26,9 +27,9 @@ interface FilePreviewProps {
 export default function FilePreview({
   isOpen,
   onClose,
-  fileUrl,
-  fileName,
-  fileType,
+  url,
+  filename,
+  type,
   allFiles = [],
   currentIndex = 0,
   onNavigate,
@@ -98,32 +99,33 @@ export default function FilePreview({
 
   // Filter to only show image/video files for navigation
   const mediaFiles = allFiles.filter(
-    (file) =>
-      file.fileType.startsWith("image/") || file.fileType.startsWith("video/")
+    (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
   );
   const canNavigate = mediaFiles.length > 1;
 
   const renderContent = () => {
-    if (fileType.startsWith("image/")) {
+    if (type.startsWith("image/")) {
       return (
         <div className="flex h-full w-full items-center justify-center p-4">
-          <img
-            src={fileUrl}
-            alt={fileName || "Preview"}
+          <Image
+            src={url}
+            alt={filename || "Preview"}
             className="max-h-full max-w-full object-contain transition-transform duration-200"
             style={{
               transform: `scale(${zoom}) rotate(${rotation}deg)`,
             }}
+            width={300}
+            height={300}
           />
         </div>
       );
     }
 
-    if (fileType.startsWith("video/")) {
+    if (type.startsWith("video/")) {
       return (
         <div className="flex h-full w-full items-center justify-center p-4">
           <video
-            src={fileUrl}
+            src={url}
             controls
             className="max-h-full max-w-full"
             style={{
@@ -149,8 +151,8 @@ export default function FilePreview({
           This file type cannot be previewed in the browser.
         </p>
         <a
-          href={fileUrl}
-          download={fileName}
+          href={url}
+          download={filename}
           className="bg-primary-red inline-flex items-center rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-red-700"
         >
           <Download className="mr-2 h-4 w-4" />
@@ -194,10 +196,10 @@ export default function FilePreview({
         <div className="mx-auto flex max-w-7xl items-center justify-between border-b border-white/20 p-4 backdrop-blur-sm dark:border-gray-700/30">
           <div className="flex-1">
             <h2 className="truncate text-lg font-medium text-white">
-              {fileName || "File Preview"}
+              {filename || "File Preview"}
             </h2>
             <div className="flex items-center space-x-2 text-sm text-white/80">
-              <span>{fileType}</span>
+              <span>{type}</span>
               {canNavigate && (
                 <span>
                   • {currentIndex + 1} of {allFiles.length}
@@ -207,7 +209,7 @@ export default function FilePreview({
           </div>
 
           {/* Controls */}
-          {fileType.startsWith("image/") && (
+          {type.startsWith("image/") && (
             <div className="mr-4 flex items-center space-x-2">
               <button
                 onClick={handleZoomOut}
@@ -239,8 +241,8 @@ export default function FilePreview({
           {/* Download and Close */}
           <div className="flex items-center space-x-2">
             <a
-              href={fileUrl}
-              download={fileName}
+              href={url}
+              download={filename}
               className="rounded-lg bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/30"
               title="Download"
             >
