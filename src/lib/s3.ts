@@ -135,8 +135,8 @@ export async function getFileMetadata(key: string): Promise<{
       contentType: result.ContentType || "application/octet-stream",
       metadata: result.Metadata || {},
     };
-  } catch (error: unknown) {
-    if (error.name === "NotFound") {
+  } catch (error: any) {
+    if (error?.name === "NotFound") {
       return null;
     }
     throw error;
@@ -222,7 +222,7 @@ export async function healthCheck(): Promise<{
       s3: true,
       bucket: true,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("S3 health check failed:", error);
 
     return {

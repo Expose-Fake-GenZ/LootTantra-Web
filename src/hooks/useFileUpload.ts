@@ -11,7 +11,7 @@ import type { FileUploadItem } from "../components/ui/FileUpload";
 interface UploadOptions {
   reportId?: string;
   onProgress?: (fileId: string, progress: number) => void;
-  onSuccess?: (fileId: string, result: unknown) => void;
+  onSuccess?: (fileId: string, result: any) => void;
   onError?: (fileId: string, error: string) => void;
 }
 
@@ -120,7 +120,7 @@ export function useFileUpload() {
                         );
                       }
                     } else {
-                      reject(new Error(response.error || "Upload failed"));
+                      reject(new Error("Upload failed"));
                     }
                   } catch (error) {
                     reject(new Error("Failed to parse response"));

@@ -15,7 +15,7 @@ export default function UploadTestPage() {
   const [reportId, setReportId] = useState<string>("test-report-123");
   const [autoUpload, setAutoUpload] = useState<boolean>(false);
 
-  const handleUploadComplete = (results: unknown[]) => {
+  const handleUploadComplete = (results: any[]) => {
     console.log("Upload complete:", results);
     setUploadResults(results);
     setError("");

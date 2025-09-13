@@ -36,7 +36,7 @@ export default function FileUploadWithProgress({
   setStatus,
 }: FileUploadWithProgressProps) {
   const [files, setFiles] = useState<FileUploadItem[]>([]);
-  const [uploadResults, setUploadResults] = useState<unknown[]>([]);
+  const [uploadResults, setUploadResults] = useState<any[]>([]);
   const { uploadFiles, isUploading } = useFileUpload();
 
   // Handle files change from FileUpload component
@@ -81,7 +81,7 @@ export default function FileUploadWithProgress({
             );
             setStatus?.("pending");
           },
-          onSuccess: (fileId, result) => {
+          onSuccess: (fileId, result: any) => {
             setFiles((prev) =>
               prev.map((f) =>
                 f.id === fileId
@@ -89,7 +89,7 @@ export default function FileUploadWithProgress({
                       ...f,
                       status: "success",
                       progress: 100,
-                      url: result.url,
+                      url: result?.url,
                     }
                   : f
               )
