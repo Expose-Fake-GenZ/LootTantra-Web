@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Github, Twitter, Mail, Menu, X } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import socials from "@/data/socials.json";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -56,7 +57,7 @@ export default function Header() {
             <div className="flex items-center space-x-3 border-l border-gray-200 pl-6 dark:border-gray-700">
               <ThemeToggle />
               <Link
-                href="https://github.com"
+                href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-600 transition-colors duration-200 hover:text-red-600 dark:text-gray-300"
@@ -65,7 +66,7 @@ export default function Header() {
                 <Github className="h-5 w-5" />
               </Link>
               <Link
-                href="https://twitter.com"
+                href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-600 transition-colors duration-200 hover:text-red-600 dark:text-gray-300"
